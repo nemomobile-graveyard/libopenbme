@@ -1,24 +1,37 @@
 AC_PREREQ([2.65])
-AC_INIT([libbmeipc], [0.8.55], [http://bugs.meego.com])
+AC_INIT([libbme], [0.0.0], [http://bugs.meego.com])
+
+# NOTE: Must the LT version must be changed when code is released:
+#  - If interfaces changed/added/removed: lt_current++, lt_rev=0
+#  - If interfaces added: lt_age++
+#  - If Interfaces removed: lt_age=0
+#  - If only code changes (interface untouched): lt_rev++
+bmeipc_lt_current=0
+bmeipc_lt_rev=0
+bmeipc_lt_age=0
+AC_SUBST([BMEIPC_LT_VERSION],[$bmeipc_lt_current:$bmeipc_lt_rev:$bmeipc_lt_age])
+
+AM_INIT_AUTOMAKE
+
 AC_CONFIG_SRCDIR([src/bmeipc.c])
-# FIXME: change to bmeipc.h
-AC_CONFIG_HEADERS([config.h])
+# FIXME: start to use config.h
+#AC_CONFIG_HEADERS([config.h])
+
+AC_DEFINE(_GNU_SOURCE)
 
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LN_S
+AC_PROG_LIBTOOL
 
-# Checks for libraries.
-# FIXME: Replace `main' with a function in `-ldl':
-#AC_CHECK_LIB([dl], [main])
-# FIXME: Replace `main' with a function in `-ldsme':
-#AC_CHECK_LIB([dsme], [main])
-# FIXME: Replace `main' with a function in `-lrt':
-#AC_CHECK_LIB([rt], [main])
+# Specify dir for local macros
+AC_CONFIG_MACRO_DIR([m4])
+
+AC_CHECK_LIB([rt], [clock_gettime], [], AC_MSG_FAILURE([librt required!]))
 
 # Checks for header files.
-AC_CHECK_HEADERS([limits.h stdlib.h string.h sys/socket.h sys/time.h unistd.h])
+AC_CHECK_HEADERS([stdlib.h sys/socket.h sys/time.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SSIZE_T
@@ -27,7 +40,6 @@ AC_TYPE_SSIZE_T
 AC_FUNC_ALLOCA
 AC_CHECK_FUNCS([clock_gettime gettimeofday memset socket strerror])
 
-AC_CONFIG_FILES([Makefile
-                 src/Makefile])
+AC_CONFIG_FILES([Makefile bmeipc.pc])
 
 AC_OUTPUT

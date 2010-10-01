@@ -1,0 +1,11 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@/bme
+
+Name: bmeipc
+Description: BME IPC socket library
+Version: @PACKAGE_VERSION@
+Libs: -L${libdir} -lbmeipc
+Cflags: -I${includedir}
+
