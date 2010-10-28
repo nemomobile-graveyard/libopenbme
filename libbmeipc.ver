@@ -15,3 +15,8 @@ global:
     _bme_cookie_read;
     _bme_cookie_write;
 };
+
+HIDDEN {
+local:
+    *;
+};
