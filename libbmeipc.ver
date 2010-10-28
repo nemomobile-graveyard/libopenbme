@@ -1,0 +1,17 @@
+libbmeipc_0.0 {
+global:
+    bme_packet_read;
+    bme_packet_write;
+    bme_read;
+    bme_write;
+    bme_disconnect;
+    bme_connect;
+    bme_send_get_reply;
+    bme_get_server_pid;
+};
+
+libbmeipc_internal {
+global:
+    _bme_cookie_read;
+    _bme_cookie_write;
+};

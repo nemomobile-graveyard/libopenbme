@@ -1,6 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
 
-AM_CFLAGS = -Wall -fPIC -I@abs_top_srcdir@/include
+AM_CFLAGS = -Wall -fPIC -I@top_srcdir@/include
 
 bmeincludedir = @includedir@/bme
 pkgconfigdir = @libdir@/pkgconfig
@@ -9,7 +9,7 @@ lib_LTLIBRARIES = libbmeipc.la \
                   libbmeipccookie.la
 
 libbmeipc_la_SOURCES = src/bmeipc.c
-libbmeipc_la_LDFLAGS = -version-info $(BMEIPC_LT_VERSION)
+libbmeipc_la_LDFLAGS = -version-info $(BMEIPC_LT_VERSION) -Wl,--version-script,@top_srcdir@/libbmeipc.ver
 
 libbmeipccookie_la_SOURCES = src/bmeipccookie.c \
                              include/bmeipc-internal.h
