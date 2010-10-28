@@ -121,24 +121,4 @@ int32_t bme_send_get_reply(const void *smsg, int32_t sbytes,
  */
 int32_t bme_get_server_pid(void);
 
-/**
- * Read BME cookie
- *
- * @param fd socket descriptor to receive cookie from
- * @param cookie cookie
- *
- * @return  0 on success, -1 on error
- */
-int32_t bme_cookie_read(int32_t fd, const char *cookie);
-
-/**
- * Write BME cookie
- *
- * @param fd socket descriptor to send cookie to
- * @param cookie cookie
- *
- * @return  0 on success, -1 on error
- */
-int32_t bme_cookie_write(int32_t fd, const char *cookie);
-
 #endif /* BMEIPC_H */

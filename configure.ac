@@ -10,6 +10,10 @@ bmeipc_lt_current=0
 bmeipc_lt_rev=0
 bmeipc_lt_age=0
 AC_SUBST([BMEIPC_LT_VERSION],[$bmeipc_lt_current:$bmeipc_lt_rev:$bmeipc_lt_age])
+bmeipccookie_lt_current=$bmeipc_lt_current
+bmeipccookie_lt_rev=0
+bmeipccookie_lt_age=0
+AC_SUBST([BMEIPCCOOKIE_LT_VERSION],[$bmeipccookie_lt_current:$bmeipccookie_lt_rev:$bmeipccookie_lt_age])
 
 AM_INIT_AUTOMAKE
 
@@ -40,6 +44,6 @@ AC_TYPE_SSIZE_T
 AC_FUNC_ALLOCA
 AC_CHECK_FUNCS([clock_gettime gettimeofday memset socket strerror])
 
-AC_CONFIG_FILES([Makefile bmeipc.pc])
+AC_CONFIG_FILES([Makefile bmeipc.pc bmeipccookie.pc])
 
 AC_OUTPUT

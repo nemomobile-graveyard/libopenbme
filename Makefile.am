@@ -5,12 +5,20 @@ AM_CFLAGS = -Wall -fPIC -I@abs_top_srcdir@/include
 bmeincludedir = @includedir@/bme
 pkgconfigdir = @libdir@/pkgconfig
 
-lib_LTLIBRARIES = libbmeipc.la
+lib_LTLIBRARIES = libbmeipc.la \
+                  libbmeipccookie.la
 
 libbmeipc_la_SOURCES = src/bmeipc.c
 libbmeipc_la_LDFLAGS = -version-info $(BMEIPC_LT_VERSION)
 
-bmeinclude_HEADERS = include/bmeipc.h \
-                     include/bmemsg.h
+libbmeipccookie_la_SOURCES = src/bmeipccookie.c \
+                             include/bmeipc-internal.h
+libbmeipccookie_la_LDFLAGS = -version-info $(BMEIPCCOOKIE_LT_VERSION)
+libbmeipccookie_la_LIBADD = libbmeipc.la
 
-pkgconfig_DATA = bmeipc.pc
+bmeinclude_HEADERS = include/bmeipc.h \
+                     include/bmemsg.h \
+                     include/bmeipccookie.h
+
+pkgconfig_DATA = bmeipc.pc \
+                 bmeipccookie.pc
