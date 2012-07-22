@@ -8,7 +8,7 @@
    @author Markus Lehtonen <markus.lehtonen@nokia.com>
    @author Matti Halme <matti.halme@nokia.com>
 
-   This file is part of libbme.
+   This file is part of libopenbme.
 
    Libbme is free software; you can redistribute it and/or modify
    it under the terms of the GNU Lesser General Public License
@@ -20,7 +20,7 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with libbme. If not, see <http://www.gnu.org/licenses/>.
+   License along with libopenbme. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef BMEMSG_H

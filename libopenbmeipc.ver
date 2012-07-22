@@ -1,4 +1,4 @@
-libbmeipc_0.0 {
+libopenbmeipc_0.0 {
 global:
     bme_packet_read;
     bme_packet_write;
@@ -10,7 +10,7 @@ global:
     bme_get_server_pid;
 };
 
-libbmeipc_internal {
+libopenbmeipc_internal {
 global:
     _bme_cookie_read;
     _bme_cookie_write;

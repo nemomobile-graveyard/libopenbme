@@ -1,5 +1,5 @@
 AC_PREREQ([2.65])
-AC_INIT([libbme], [0.0.0], [http://bugs.meego.com])
+AC_INIT([libopenbme], [0.0.0], [http://bugs.meego.com])
 
 # NOTE: Must the LT version must be changed when code is released:
 #  - If interfaces changed/added/removed: lt_current++, lt_rev=0
