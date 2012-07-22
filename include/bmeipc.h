@@ -40,6 +40,42 @@ enum bme_sysmsg_e
   BME_SYSMSG_PROXY_GETTIME      /* 0x8003 get bme statistics */
 };
 
+/* for BME_SYSMSG_PROXY_GETTIME replies */
+#define BME_LAST_STAT_IDX 32
+typedef int32_t bmestat_t[BME_LAST_STAT_IDX];
+
+/* NB! these values are not absolute. they may be wrong, as they were gathered
+ * by sending a BME_SYSMSG_PROXY_GETTIME and making an awful lot of guesswork
+ * based on the values returned. You have been warned. YMMV. */
+
+/* offset inside bmestat_t to look for charger state */
+#define CHARGER_STATE 1
+#define CHARGER_STATE_CONNECTED 1
+
+/* offset inside bmestat_t to look for charging state */
+#define CHARGING_STATE 3
+#define CHARGING_STATE_STARTED 1
+
+/* offset inside bmestat_t to look for charging time (in minutes) */
+#define CHARGING_TIME 5
+
+/* offset inside bmestat_t to look for battery state */
+#define BATTERY_STATE 7
+#define BATTERY_STATE_LOW  2
+#define BATTERY_STATE_FULL 4
+
+/* offsets for battery bars inside bmestat_t */
+#define BATTERY_LEVEL_MAX 8
+#define BATTERY_LEVEL_NOW 9
+
+/* offset inside bmestat_t for how many minutes the battery has left */
+#define BATTERY_TIME_LEFT 11
+
+/* how many percent the battery has left (note: never seems to hit 100?) */
+#define BATTERY_LEVEL_PCT 16
+
+/* end BME_SYSMSG_PROXY_GETTIME stuff */
+
 /** Generic message */
 typedef struct bmeipc_msg_s
 {
