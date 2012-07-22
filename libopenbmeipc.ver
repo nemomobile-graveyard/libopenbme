@@ -6,6 +6,8 @@ global:
     bme_write;
     bmeipc_close;
     bmeipc_open;
+    bmeipc_eopen;
+    bmeipc_eclose;
     bmeipc_stat;
     bme_send_get_reply;
     bme_get_server_pid;

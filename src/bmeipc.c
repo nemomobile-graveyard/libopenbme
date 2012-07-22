@@ -36,6 +36,7 @@
 #include <time.h>
 #include <sys/time.h>
 #include <stdint.h>
+#include <sys/inotify.h>
 
 #include "bmeipc.h"
 #include "bmeipc-internal.h"
@@ -603,5 +604,43 @@ bmeipc_stat(int32_t sd, bmestat_t *stat)
     }
 
     return 0;
+}
+
+int32_t
+bmeipc_eopen(int mask)
+{
+  int result = -1;              // assume failure
+  int sd;
+
+  /* TODO: what is mask for? */
+  if (mask != -1)
+  {
+    log_error_F("bmeipc_eopen: mask values other than -1 are not supported yet\n");
+    goto cleanup;
+  }
+
+  /* Create socket */
+  sd = inotify_init1(IN_NONBLOCK);
+  if (sd == -1)
+  {
+    log_error_F("bmeipc_eopen: inotify_init1 %s\n", strerror(errno));
+    goto cleanup;
+  }
+
+  /* If we get here, the connection was succesfully established */
+  result = sd;
+
+cleanup:
+
+  if (result == -1)
+  {
+      close(sd);
+  }
+  return result;
+}
+
+void bmeipc_eclose(int32_t sd)
+{
+    close(sd);
 }
 

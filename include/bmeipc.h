@@ -171,4 +171,15 @@ int32_t bme_send_get_reply(int32_t fd, const void *smsg, int32_t sbytes,
  */
 int32_t bme_get_server_pid(int32_t fd);
 
+/**
+ * Open connection to BME server
+ *
+ * @ingroup bmeipc
+ *
+ * @return socket descriptor on success, -1 on error
+ */
+int32_t bmeipc_eopen(int mask);
+void bmeipc_eclose(int32_t sd);
+
+
 #endif /* BMEIPC_H */
