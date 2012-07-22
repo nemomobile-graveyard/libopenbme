@@ -583,3 +583,25 @@ bmeipc_close(int32_t sd)
     }
   }
 }
+
+int32_t
+bmeipc_stat(int32_t sd, bmestat_t *stat)
+{
+    int32_t n = 0;
+    bmeipc_msg_t rq;
+    rq.type = BME_SYSMSG_PROXY_GETTIME;
+    rq.subtype = 0;
+
+    if (bme_send_get_reply(sd, &rq, sizeof(rq), stat, sizeof(*stat), &n) < 0) {
+        log_warn_F("bmeipc_stat send_get_reply errored: %d (%s)\n", errno, strerror(errno));
+        return -1;
+    }
+
+    if (n != sizeof(*stat)) {
+        log_warn_F("bmeipc_stat send_get_reply returned %d bytes, wanted %d\n", n, sizeof(*stat));
+        return -1;
+    }
+
+    return 0;
+}
+

@@ -44,6 +44,18 @@ enum bme_sysmsg_e
 #define BME_LAST_STAT_IDX 32
 typedef int32_t bmestat_t[BME_LAST_STAT_IDX];
 
+/**
+ * Retrieve statistics from BME server
+ *
+ * @param sd socket descriptor
+ * @param stat the bmestat_t structure to populate
+ *
+ * @return nonzero if successful, -1 on error
+ *
+ * @ingroup bmeipc
+ */
+int32_t bmeipc_stat(int32_t sd, bmestat_t *stat);
+
 /* NB! these values are not absolute. they may be wrong, as they were gathered
  * by sending a BME_SYSMSG_PROXY_GETTIME and making an awful lot of guesswork
  * based on the values returned. You have been warned. YMMV. */
