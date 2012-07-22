@@ -4,8 +4,8 @@ global:
     bme_packet_write;
     bme_read;
     bme_write;
-    bme_disconnect;
-    bme_connect;
+    bmeipc_close;
+    bmeipc_open;
     bme_send_get_reply;
     bme_get_server_pid;
 };

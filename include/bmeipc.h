@@ -66,7 +66,7 @@ typedef struct bmeipc_pid_s
  * @ingroup bmeipc
  */
 int32_t bme_packet_read(int32_t fd, void *msg, int32_t bytes);
-int32_t bme_read(void *msg, int32_t bytes);
+int32_t bme_read(int32_t fd, void *msg, int32_t bytes);
 
 /**
  * Send BME data to socket.
@@ -80,14 +80,16 @@ int32_t bme_read(void *msg, int32_t bytes);
  * @ingroup bmeipc
  */
 int32_t bme_packet_write(int32_t fd, const void *msg, int32_t bytes);
-int32_t bme_write(const void *msg, int32_t bytes);
+int32_t bme_write(int32_t fd, const void *msg, int32_t bytes);
 
 /**
  * Close connection to BME server
  *
+ * @param sd The bme descriptor to close.
+ *
  * @ingroup bmeipc
  */
-void bme_disconnect(void);
+void bmeipc_close(int32_t sd);
 
 /**
  * Open connection to BME server
@@ -96,7 +98,7 @@ void bme_disconnect(void);
  *
  * @return socket descriptor on success, -1 on error
  */
-int32_t bme_connect(void);
+int32_t bmeipc_open(void);
 
 /* -------------------- BME messaging primitives -------------------- */
 
@@ -111,7 +113,7 @@ int32_t bme_connect(void);
  * @return  >= 0 on success, -1 on error
  *    NB: if rmsg is NULL reply status is returned
  */
-int32_t bme_send_get_reply(const void *smsg, int32_t sbytes,
+int32_t bme_send_get_reply(int32_t fd, const void *smsg, int32_t sbytes,
                            void *rmsg, int32_t rbytes, int32_t * rbytes_act);
 
 /**
@@ -119,6 +121,6 @@ int32_t bme_send_get_reply(const void *smsg, int32_t sbytes,
  *
  * @return  PID on success, -1 on error
  */
-int32_t bme_get_server_pid(void);
+int32_t bme_get_server_pid(int32_t fd);
 
 #endif /* BMEIPC_H */

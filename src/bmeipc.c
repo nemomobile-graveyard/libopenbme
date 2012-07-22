@@ -92,12 +92,6 @@ msecsto(const struct timeval *timeout)
   return msec;
 }
 
-
-/**
- * BME client socket descriptor
- */
-static int bme_sd = -1;
-
 /**
  * BME packet header structure
  */
@@ -447,7 +441,7 @@ cleanup:
  * @return socket descriptor if successful, -1=Error
  */
 int
-bme_connect(void)
+bmeipc_open(void)
 {
   static const char path[] = BME_SRV_SOCK_PATH;
   static const char cookie[] = BME_SRV_COOKIE;
@@ -456,20 +450,11 @@ bme_connect(void)
 
   struct sockaddr_un addr;
   socklen_t asize;
-
-  /* Check that we are not already connected */
-  if (bme_sd != -1)
-  {
-    // set errno to something meaningful
-    errno = EALREADY;
-    log_error_F("already connected\n");
-    // return error without disconnecting
-    return -1;
-  }
+  int sd;
 
   /* Create socket */
-  bme_sd = socket(AF_UNIX, SOCK_STREAM, 0);
-  if (bme_sd == -1)
+  sd = socket(AF_UNIX, SOCK_STREAM, 0);
+  if (sd == -1)
   {
     log_error_F("socket: %s\n", strerror(errno));
     goto cleanup;
@@ -481,24 +466,24 @@ bme_connect(void)
   addr.sun_family = AF_UNIX;
   asize = sizeof addr;
 
-  if (connect(bme_sd, (struct sockaddr *)&addr, asize) == -1)
+  if (connect(sd, (struct sockaddr *)&addr, asize) == -1)
   {
     /*log_error_F("connect: %s\n", strerror(errno)); */
     goto cleanup;
   }
 
-  if (_bme_cookie_write(bme_sd, cookie) == -1)
+  if (_bme_cookie_write(sd, cookie) == -1)
   {
     goto cleanup;
   }
   /* If we get here, the connection was succesfully established */
-  result = bme_sd;
+  result = sd;
 
 cleanup:
 
   if (result == -1)
   {
-    bme_disconnect();
+    bmeipc_close(sd);
   }
   return result;
 }
@@ -506,6 +491,7 @@ cleanup:
 /**
  * Send a message to the server and read reply.
  *
+ * @sd: fd to bme
  * @smsg: address of a message to send
  * @sbytes: size of message to send
  * @rmsg: address of a reply buffer
@@ -515,20 +501,20 @@ cleanup:
  * @return status value, set by the server, or -1=Error
  */
 int
-bme_send_get_reply(const void *smsg, int sbytes,
+bme_send_get_reply(int32_t sd, const void *smsg, int sbytes,
                    void *rmsg, int rbytes, int *rbytes_act)
 {
   int status, nb;
 
-  if (bme_write(smsg, sbytes) != sbytes)
+  if (bme_write(sd, smsg, sbytes) != sbytes)
     return -1;
 
-  if (bme_read(&status, sizeof(status)) == -1)
+  if (bme_read(sd, &status, sizeof(status)) == -1)
     return -1;
 
   if (status >= 0 && rmsg && rbytes)
   {
-    nb = bme_read(rmsg, rbytes);
+    nb = bme_read(sd, rmsg, rbytes);
     if (nb == -1)
       return -1;
     if (rbytes_act)
@@ -540,21 +526,16 @@ bme_send_get_reply(const void *smsg, int sbytes,
 /**
  * Write a data packet to the server.
  *
+ * @sd: fd to bme
  * @msg: data address
  * @bytes: size of data to write
  *
  * @return number of bytes written if successful, -1=Error
  */
 int
-bme_write(const void *msg, int bytes)
+bme_write(int32_t sd, const void *msg, int bytes)
 {
-  if (bme_sd == -1)
-  {
-    // set errno to something meaningful
-    errno = ENOTCONN;
-    return -1;
-  }
-  return bme_packet_write(bme_sd, msg, bytes);
+  return bme_packet_write(sd, msg, bytes);
 }
 
 /**
@@ -566,15 +547,9 @@ bme_write(const void *msg, int bytes)
  * @return number of bytes read if successful, -1=Error
  */
 int
-bme_read(void *msg, int bytes)
+bme_read(int32_t sd, void *msg, int bytes)
 {
-  if (bme_sd == -1)
-  {
-    // set errno to something meaningful
-    errno = ENOTCONN;
-    return -1;
-  }
-  return bme_packet_read(bme_sd, msg, bytes);
+  return bme_packet_read(sd, msg, bytes);
 }
 
 /**
@@ -583,12 +558,12 @@ bme_read(void *msg, int bytes)
  * @return positive PID if successful, -1=Error
  */
 int
-bme_get_server_pid(void)
+bme_get_server_pid(int32_t sd)
 {
   bmeipc_msg_t gm = { BME_SYSMSG_GETPID, 0 };
   bmeipc_pid_t reply;
 
-  if (bme_send_get_reply(&gm, sizeof(gm), &reply, sizeof(reply), NULL) < 0)
+  if (bme_send_get_reply(sd, &gm, sizeof(gm), &reply, sizeof(reply), NULL) < 0)
     return -1;
   else
     return reply.pid;
@@ -598,14 +573,13 @@ bme_get_server_pid(void)
  * Disconnect from BME server.
  */
 void
-bme_disconnect(void)
+bmeipc_close(int32_t sd)
 {
-  if (bme_sd != -1)
+  if (sd != -1)
   {
-    if (TEMP_FAILURE_RETRY(close(bme_sd)) == -1)
+    if (TEMP_FAILURE_RETRY(close(sd)) == -1)
     {
       log_warn_F("close: %s\n", strerror(errno));
     }
-    bme_sd = -1;
   }
 }
